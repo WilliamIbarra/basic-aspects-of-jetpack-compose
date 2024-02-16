@@ -4,6 +4,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.ui.text.font.FontWeight
 
 class MainActivity : ComponentActivity() {
@@ -48,7 +56,7 @@ fun MyApp(modifier: Modifier = Modifier) {
         mutableStateOf(true)
     } // Elevate this variable to take the control to update it when OnBoardingScreen is called
 
-    Surface(modifier) {
+    Surface(modifier, color = MaterialTheme.colorScheme.background) {
         if (shouldShowOnBoarding) {
             OnboardingScreen(onContinueClicked = {shouldShowOnBoarding = false})
         } else {
@@ -91,32 +99,66 @@ fun OnboardingScreen(
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    var expanded by rememberSaveable { mutableStateOf(false) } // This variable uses remember to save the previous status
-    val extraPadding by animateDpAsState( //  This variable saves the expanded mode isn't remembered is calculated
-        if (expanded) 48.dp else 0.dp,
-        animationSpec = spring( // This spring specification doesn't get any parameter related to time, instead of it use physical properties such as rigid or cushioning
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary
         ),
-        label = "")
+        modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+    ) {
+        CardContent(name)
+    }
+}
 
-    Surface(
-        color = MaterialTheme.colorScheme.primary,
-        modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)) {
-        Row(modifier = Modifier.padding(24.dp)){ // Able to add the button in the left of the composable element
-            Column(modifier = Modifier
+@Composable
+private fun CardContent(name: String) {
+    var expanded by rememberSaveable { mutableStateOf(false) } // This variable uses remember to save the previous status
+//    val extraPadding by animateDpAsState( //  This variable saves the expanded mode isn't remembered is calculated
+//        if (expanded) 48.dp else 0.dp,
+//        animationSpec = spring( // This spring specification doesn't get any parameter related to time, instead of it use physical properties such as rigid or cushioning
+//            dampingRatio = Spring.DampingRatioMediumBouncy,
+//            stiffness = Spring.StiffnessLow
+//        ),
+//        label = "")
+
+        Row(
+            modifier = Modifier
+                .padding(24.dp)
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )){ // Able to add the button in the left of the composable element
+            Column(
+                modifier = Modifier
                 .weight(1f)
-                .padding(bottom = extraPadding.coerceAtLeast(0.dp))){ // The element fill all the free space
+                .padding(12.dp)
+            ) { // The element fill all the free space
                 Text(text = "Hello")
-                Text(text = "$name!", style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold)
+                Text(
+                    text = "$name!", style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold
+                    )
                 )
+                if (expanded) {
+                    Text(
+                        text = ("Composem ipsum color, padding theme elit, sed do bouncy. ").repeat(4),
+                    )
+                }
             }
-            ElevatedButton(onClick = { expanded = !expanded  }) { // The button element, Change the value of the variable
-                    Text(if (expanded) "Show less" else "Show more") // The text showed inside the button
+            IconButton(onClick = { expanded = !expanded  }) { // The button element, Change the value of the variable
+                Icon(
+                    imageVector =
+                    if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                    contentDescription = if(expanded) {
+                        "Show less"
+                    } else {
+                        "Show more"
+                    }
+                    ) // The text showed inside the button
             }
         }
-    }
+
 }
 
 @Preview(
