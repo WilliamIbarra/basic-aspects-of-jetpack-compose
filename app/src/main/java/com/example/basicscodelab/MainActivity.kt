@@ -3,6 +3,7 @@ package com.example.basicscodelab
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.Spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,8 @@ import com.example.basicscodelab.ui.theme.BasicsCodeLabTheme
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +90,13 @@ fun OnboardingScreen(
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     var expanded by rememberSaveable { mutableStateOf(false) } // This variable uses remember to save the previous status
-    val extraPadding = if (expanded) 48.dp else 0.dp //  This variable saves the expanded mode isn't remembered is calculated
+    val extraPadding by animateDpAsState( //  This variable saves the expanded mode isn't remembered is calculated
+        if (expanded) 48.dp else 0.dp,
+        animationSpec = spring( // This spring specification doesn't get any parameter related to time, instead of it use physical properties such as rigid or cushioning
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "")
 
     Surface(
         color = MaterialTheme.colorScheme.primary,
@@ -95,7 +104,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         Row(modifier = Modifier.padding(24.dp)){ // Able to add the button in the left of the composable element
             Column(modifier = Modifier
                 .weight(1f)
-                .padding(bottom = extraPadding)){ // The element fill all the free space
+                .padding(bottom = extraPadding.coerceAtLeast(0.dp))){ // The element fill all the free space
                 Text(text = "Hello")
                 Text(text = "$name!")
             }
