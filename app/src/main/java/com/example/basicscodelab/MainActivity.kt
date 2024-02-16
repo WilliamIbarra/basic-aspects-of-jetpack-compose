@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.example.basicscodelab.ui.theme.BasicsCodeLabTheme
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.saveable.rememberSaveable
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyApp(modifier: Modifier = Modifier) {
-    var shouldShowOnBoarding by remember {
+    var shouldShowOnBoarding by rememberSaveable {
         mutableStateOf(true)
     } // Elevate this variable to take the control to update it when OnBoardingScreen is called
 
@@ -86,7 +86,7 @@ fun OnboardingScreen(
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    var expanded by remember { mutableStateOf(false) } // This variable uses remember to save the previous status
+    var expanded by rememberSaveable { mutableStateOf(false) } // This variable uses remember to save the previous status
     val extraPadding = if (expanded) 48.dp else 0.dp //  This variable saves the expanded mode isn't remembered is calculated
 
     Surface(
