@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.basicscodelab.ui.theme.BasicsCodeLabTheme
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,10 +52,12 @@ fun MyApp(modifier: Modifier = Modifier) {
     }
 }
 @Composable
-private fun Greetings(modifier: Modifier = Modifier, names: List<String> = listOf("World", "Compose")) {
+private fun Greetings(
+    modifier: Modifier = Modifier,
+    names: List<String> = List(1000) {"$it"}) { // Add a list of 1000 elements and set the number as a greeting
 
-        Column(modifier = modifier.padding(vertical = 4.dp)) {
-            for (name in names) { // add all the text views for each text in the list
+        LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
+            items(items = names) { name -> // add all the text views for each text in the list
                 Greeting(name = name)
             }
         }
