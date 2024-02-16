@@ -13,6 +13,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,16 +43,21 @@ fun MyApp(modifier: Modifier = Modifier, names: List<String> = listOf("World", "
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
+    val expanded = remember { mutableStateOf(false) } // This variable uses remember to save the previous status
+    val extraPadding = if (expanded.value) 48.dp else 0.dp //  This variable saves the expanded mode isn't remembered is calculated
+
     Surface(
         color = MaterialTheme.colorScheme.primary,
         modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)) {
         Row(modifier = Modifier.padding(24.dp)){ // Able to add the button in the left of the composable element
-            Column(modifier = Modifier.weight(1f)){ // The element fill all the free space
+            Column(modifier = Modifier
+                    .weight(1f)
+                    .padding(bottom = extraPadding)){ // The element fill all the free space
                 Text(text = "Hello")
                 Text(text = "$name!")
             }
-            ElevatedButton(onClick = { /*TODO: add functionality later*/ }) { // The button element
-                    Text("Show more") // The text showed inside the button
+            ElevatedButton(onClick = { expanded.value = !expanded.value  }) { // The button element, Change the value of the variable
+                    Text(if (expanded.value) "Show less" else "Show more") // The text showed inside the button
             }
         }
     }
