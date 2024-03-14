@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BasicsCodeLab</string>
+    <string name="title_activity_my_soothe">MySoothe</string>
+    <string name="placeholder_seacrh">Search\n</string>
 </resources>
